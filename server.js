@@ -2,7 +2,7 @@ var express = require('express');
 var multer = require('multer');
 var path = require('path');
 var fs = require('fs');
-var FormData = require('form-data');
+// var FormData = require('form-data');
 
 var storage = multer.diskStorage({
   destination: function(req, file, cb) {

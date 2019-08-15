@@ -3,7 +3,6 @@ import { withStyles } from '@material-ui/styles';
 import { withTheme } from '@material-ui/styles';
 import Paper from '@material-ui/core/Paper';
 import axios from 'axios';
-import { CsvToHtmlTable } from 'react-csv-to-table';
 
 import UploadInput from './UploadInput';
 import SubmitButton from './SumbitButton';
@@ -24,7 +23,10 @@ class UploadForm extends Component {
 
   onSubmit = async e => {
     e.preventDefault();
-
+    if (!this.state.inputFile || !this.state.modelFile) {
+      alert('Please upload file first!');
+      return;
+    }
     const url = '/api/predict';
     const formData = new FormData();
     formData.append('inputFile', this.state.inputFile);
@@ -54,7 +56,7 @@ class UploadForm extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <>
+      <div className={classes.wrapper}>
         <Paper className={classes.paper}>
           <form>
             <UploadInput
@@ -77,19 +79,8 @@ class UploadForm extends Component {
           </form>
         </Paper>
 
-        {/* {this.state.outputStr ? <DataTable outputStr={this.state.outputStr} /> : ''} */}
-        {/* <Paper>
-          {this.state.outputStr ? (
-            <CsvToHtmlTable
-              data={this.state.outputStr}
-              csvDelimiter=","
-              tableClassName="table table-striped table-hover"
-            />
-          ) : (
-            ''
-          )}
-        </Paper> */}
-      </>
+        {this.state.outputStr ? <DataTable outputStr={this.state.outputStr} /> : ''}
+      </div>
     );
   }
 }
@@ -97,7 +88,15 @@ class UploadForm extends Component {
 const styles = {
   paper: {
     width: '100%',
-    padding: '20px 40px'
+    padding: '20px 40px',
+    marginBottom: '20px'
+  },
+  wrapper: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 };
 

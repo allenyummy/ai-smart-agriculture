@@ -18,8 +18,9 @@ function App(props) {
 
 const styles = {
   container: {
-    padding: '80px 0',
+    padding: '80px 0 0 20px',
     display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center'
   }

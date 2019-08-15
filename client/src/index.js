@@ -8,14 +8,9 @@ import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 const theme = createMuiTheme({
   background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
   palette: {
-    primary: {
-      light: '#fff',
-      main: 'rgb(23, 105, 170)',
-      dark: '#000'
-    },
-    secondary: {
-      main: '#FE6B8B'
-    }
+    // secondary: {
+    //   main: '#FE6B8B'
+    // }
   },
   typography: {
     useNextVariants: true
