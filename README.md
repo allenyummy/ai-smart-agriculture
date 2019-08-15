@@ -1,5 +1,10 @@
 # AI Smart Agriculture Web
 
+### Requirement
+
+npm >= 6.9.0
+node >= v12.5.0
+
 ### Usage
 
 ```
