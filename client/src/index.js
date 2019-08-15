@@ -14,14 +14,11 @@ const theme = createMuiTheme({
       dark: '#000'
     },
     secondary: {
-      main: '#f44336'
+      main: '#FE6B8B'
     }
   },
   typography: {
     useNextVariants: true
-  },
-  jason: {
-    main: '#FE6B8B'
   }
 });
 

@@ -1,35 +1,29 @@
 import React, { Component } from 'react';
-import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/styles';
 import { withTheme } from '@material-ui/styles';
 import Paper from '@material-ui/core/Paper';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import axios from 'axios';
 import { CsvToHtmlTable } from 'react-csv-to-table';
+
+import UploadInput from './UploadInput';
+import SubmitButton from './SumbitButton';
+import DownloadButton from './DownloadButton';
+import DataTable from '../data-table/DataTable';
 
 class UploadForm extends Component {
   constructor(props) {
     super(props);
-    this.state = { inputFile: '', modelFile: '', outputFile: '' };
+    this.state = { inputFile: '', modelFile: '', outputStr: '', loading: false, success: false };
   }
 
   onChange = e => {
     if (e.target.files.length > 0) {
       this.setState({ [e.target.name]: e.target.files[0] });
     }
-    console.log(this.state.inputFile);
   };
 
-  showText = file => {
-    return file ? <span>File Selected - {file.name}</span> : <span>No file selected...</span>;
-  };
-
-  onFormSubmit = async e => {
+  onSubmit = async e => {
     e.preventDefault();
-
-    // const result = await axios.get('api/test');
-    // console.log(result.data);
-    // this.setState({ outputFile: result.data });
 
     const url = '/api/predict';
     const formData = new FormData();
@@ -42,10 +36,19 @@ class UploadForm extends Component {
       }
     };
 
-    axios.post(url, formData, config);
-    // const result = await axios.post(url, formData, config);
-    // console.log('Post success!');
-    // this.setState({ outputFile: result.data });
+    // axios.post(url, formData, config);
+    this.setState({ loading: true, success: false });
+    const result = await axios.post(url, formData, config);
+    this.setState({ outputStr: result.data, loading: false, success: true });
+  };
+
+  onDownload = () => {
+    let data = new Blob([this.state.outputStr], { type: 'text/csv' });
+    let csvURL = window.URL.createObjectURL(data);
+    let tempLink = document.createElement('a');
+    tempLink.href = csvURL;
+    tempLink.setAttribute('download', 'output.csv');
+    tempLink.click();
   };
 
   render() {
@@ -53,65 +56,32 @@ class UploadForm extends Component {
     return (
       <>
         <Paper className={classes.paper}>
-          <form onSubmit={this.onFormSubmit}>
-            <input
-              type="file"
+          <form>
+            <UploadInput
+              file={this.state.inputFile}
+              onChange={this.onChange}
               name="inputFile"
+              showText="Upload Cleaned Data"
               accept=".csv"
-              style={{ display: 'none' }}
-              id="input-file-input"
-              onChange={this.onChange}
             />
-            <div className={classes.label}>
-              <Button className={classes.upload} variant="contained" component="label" htmlFor="input-file-input">
-                Upload Cleaned Data
-                <CloudUploadIcon className={classes.rightIcon} />
-              </Button>
-              <span style={{ display: 'inline-block' }}>{this.showText(this.state.inputFile)}</span>
-            </div>
-            <br />
 
-            <input
-              type="file"
+            <UploadInput
+              file={this.state.modelFile}
+              onChange={this.onChange}
               name="modelFile"
-              style={{ display: 'none' }}
-              id="model-file-input"
-              onChange={this.onChange}
+              showText="Upload Model File"
             />
-            <div className={classes.label}>
-              <Button className={classes.upload} variant="contained" component="label" htmlFor="model-file-input">
-                Upload Model File
-                <CloudUploadIcon className={classes.rightIcon} />
-              </Button>
-              <span style={{ display: 'inline-block' }}>{this.showText(this.state.modelFile)}</span>
-            </div>
-            <br />
 
-            <input type="submit" style={{ display: 'none' }} id="raised-button-submit" />
-            <Button
-              className={classes.submit}
-              variant="contained"
-              color="primary"
-              component="label"
-              htmlFor="raised-button-submit"
-            >
-              Submit
-            </Button>
-            <Button
-              className={classes.download}
-              variant="contained"
-              color={this.props.theme.jason}
-              // href={'data:attachment/csv' + encodeURIComponent(this.state.outputFile)}
-              href="/api/predict"
-            >
-              Download
-            </Button>
+            <SubmitButton onSubmit={this.onSubmit} success={this.state.success} loading={this.state.loading} />
+            {this.state.outputStr ? <DownloadButton onDownload={this.onDownload} /> : ''}
           </form>
         </Paper>
+
+        {/* {this.state.outputStr ? <DataTable outputStr={this.state.outputStr} /> : ''} */}
         {/* <Paper>
-          {this.state.outputFile ? (
+          {this.state.outputStr ? (
             <CsvToHtmlTable
-              data={this.state.outputFile}
+              data={this.state.outputStr}
               csvDelimiter=","
               tableClassName="table table-striped table-hover"
             />
@@ -128,20 +98,6 @@ const styles = {
   paper: {
     width: '100%',
     padding: '20px 40px'
-  },
-  rightIcon: {
-    marginLeft: '5px'
-  },
-  upload: { padding: '5px 10px', marginRight: '8px', minWidth: '40%', textTransform: 'none' },
-  label: { width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  submit: {
-    marginTop: '20px',
-    width: '100%'
-  },
-  download: {
-    marginTop: '20px',
-    width: '100%'
-    // color: theme.palette.jason
   }
 };
 

@@ -15,6 +15,7 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage });
 
 var app = express();
+
 app.post(
   '/api/predict',
   upload.fields([{ name: 'inputFile', maxCount: 1 }, { name: 'modelFile', maxCount: 1 }]),
@@ -26,12 +27,14 @@ app.post(
       'tmp/my-uploads/modelFile',
       '-otmp/my-uploads/output.csv'
     ]);
-    let form = new FormData();
-    form.append('outputFile', fs.createReadStream('tmp/my-uploads/output.csv'));
+    // let form = new FormData();
+    // form.append('outputFile', fs.createReadStream('tmp/my-uploads/output.csv'));
 
-    res.setHeader('Content-Type', 'text/csv');
-    res.setHeader('Content-Disposition', 'attachment; filename="output.csv"');
-    res.send(form);
+    // res.setHeader('Content-Type', 'text/csv');
+    // res.setHeader('Content-Disposition', 'attachment; filename="output.csv"');
+    // res.send(form);
+
+    res.sendFile(path.join(__dirname, '/tmp/my-uploads', 'output.csv'));
   }
 );
 

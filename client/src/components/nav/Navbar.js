@@ -4,15 +4,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
-const styles = {
-  toolbar: {
-    justifyContent: 'space-between'
-  },
-  title: {
-    textDecoration: 'none'
-  }
-};
-
 function Navbar(props) {
   const { classes } = props;
   return (
@@ -27,5 +18,13 @@ function Navbar(props) {
     </nav>
   );
 }
+const styles = {
+  toolbar: {
+    justifyContent: 'space-between'
+  },
+  title: {
+    textDecoration: 'none'
+  }
+};
 
 export default withStyles(styles)(Navbar);
