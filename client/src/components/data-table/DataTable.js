@@ -10,6 +10,7 @@ function DataTable(props) {
   const outputArr = outputStr.split('\n').map(function(row) {
     return row.split(',');
   });
+  outputArr.unshift(['', '遮陰網', '內循環扇', '天窗', '捲揚1', '捲揚2']);
   function cellRenderer({ columnIndex, key, rowIndex, style }) {
     return (
       <div key={key} style={style}>

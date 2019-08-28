@@ -3,6 +3,8 @@ import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import logo from './logo.png';
+import { flexbox } from '@material-ui/system';
 
 function Navbar(props) {
   const { classes } = props;
@@ -12,6 +14,10 @@ function Navbar(props) {
         <Toolbar className={classes.toolbar}>
           <Typography variant="h6" color="inherit" className={classes.title}>
             AI Smart Agriculture
+          </Typography>
+          <Typography variant="h6" color="inherit" className={classes.lab}>
+            國立台灣大學生物產業機電工程學系
+            <img src={logo} alt="Kitten" height="65" width="65" />
           </Typography>
         </Toolbar>
       </AppBar>
@@ -23,6 +29,11 @@ const styles = {
     justifyContent: 'space-between'
   },
   title: {
+    textDecoration: 'none'
+  },
+  lab: {
+    display: 'flex',
+    alignItems: 'center',
     textDecoration: 'none'
   }
 };

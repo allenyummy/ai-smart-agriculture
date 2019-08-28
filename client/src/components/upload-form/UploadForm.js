@@ -8,6 +8,11 @@ import UploadInput from './UploadInput';
 import SubmitButton from './SumbitButton';
 import DownloadButton from './DownloadButton';
 import DataTable from '../data-table/DataTable';
+import PretrainedButton from './PretrainedButton';
+import AccuracyTable from './AccuracyTable';
+
+const httpClient = axios.create();
+httpClient.defaults.timeout = 60 * 25 * 1000;
 
 class UploadForm extends Component {
   constructor(props) {
@@ -40,7 +45,31 @@ class UploadForm extends Component {
 
     // axios.post(url, formData, config);
     this.setState({ loading: true, success: false });
-    const result = await axios.post(url, formData, config);
+    // const result = await axios.post(url, formData, config);
+    const result = await httpClient.post(url, formData, config);
+    this.setState({ outputStr: result.data, loading: false, success: true });
+  };
+
+  onSubmitPretrained = async (e, model) => {
+    e.preventDefault();
+    if (!this.state.inputFile) {
+      alert('Please upload file first!');
+      return;
+    }
+    const url = '/api/predictPretrain';
+    const formData = new FormData();
+    formData.append('inputFile', this.state.inputFile);
+    formData.append('model', model);
+
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data'
+      }
+    };
+
+    // axios.post(url, formData, config);
+    this.setState({ loading: true, success: false });
+    const result = await httpClient.post(url, formData, config);
     this.setState({ outputStr: result.data, loading: false, success: true });
   };
 
@@ -55,8 +84,13 @@ class UploadForm extends Component {
 
   render() {
     const { classes } = this.props;
+    const pretrainedModelArr = ['RF', 'DT', 'XGB', 'LSTM'];
     return (
       <div className={classes.wrapper}>
+        <Paper className={classes.paper}>
+          <AccuracyTable />
+        </Paper>
+
         <Paper className={classes.paper}>
           <form>
             <UploadInput
@@ -73,8 +107,19 @@ class UploadForm extends Component {
               name="modelFile"
               showText="Upload Model File"
             />
-
+            <div className={classes.pretrainedWrapper}>
+              {pretrainedModelArr.map(model => (
+                <PretrainedButton
+                  onSubmit={e => this.onSubmitPretrained(e, model)}
+                  success={this.state.success}
+                  loading={this.state.loading}
+                  key={model}
+                  model={model}
+                />
+              ))}
+            </div>
             <SubmitButton onSubmit={this.onSubmit} success={this.state.success} loading={this.state.loading} />
+
             {this.state.outputStr ? <DownloadButton onDownload={this.onDownload} /> : ''}
           </form>
         </Paper>
@@ -97,6 +142,11 @@ const styles = {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  pretrainedWrapper: {
+    width: '40%',
+    display: 'flex',
+    justifyContent: 'space-around'
   }
 };
 
