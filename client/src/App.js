@@ -1,6 +1,6 @@
 import React from 'react';
-import UploadForm from './components/upload-form/UploadForm';
-import AccuracyTable from './components/accuracy-table/AccuracyTable';
+import PredictForm from './components/predict-form/PredictForm';
+import CleanForm from './components/clean-form/CleanForm';
 
 import { withStyles } from '@material-ui/core/styles';
 import Navbar from './components/nav/Navbar';
@@ -12,8 +12,8 @@ function App(props) {
     <>
       <Navbar />
       <Container maxWidth="md" className={classes.container}>
-        {/* <AccuracyTable /> */}
-        <UploadForm />
+        <PredictForm />
+        {/* <CleanForm /> */}
       </Container>
     </>
   );

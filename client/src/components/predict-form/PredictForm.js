@@ -14,7 +14,7 @@ import AccuracyTable from './AccuracyTable';
 const httpClient = axios.create();
 httpClient.defaults.timeout = 60 * 25 * 1000;
 
-class UploadForm extends Component {
+class PredictForm extends Component {
   constructor(props) {
     super(props);
     this.state = { inputFile: '', modelFile: '', outputStr: '', loading: false, success: false };
@@ -70,7 +70,11 @@ class UploadForm extends Component {
     // axios.post(url, formData, config);
     this.setState({ loading: true, success: false });
     const result = await httpClient.post(url, formData, config);
-    this.setState({ outputStr: result.data, loading: false, success: true });
+    let resultArr = result.split('\n').map(function(row) {
+      return row.split(',');
+    });
+    resultArr.unshift(['', '遮陰網', '內循環扇', '天窗', '捲揚1', '捲揚2']);
+    this.setState({ outputStr: result.data, outputArr: resultArr, loading: false, success: true });
   };
 
   onDownload = () => {
@@ -78,7 +82,7 @@ class UploadForm extends Component {
     let csvURL = window.URL.createObjectURL(data);
     let tempLink = document.createElement('a');
     tempLink.href = csvURL;
-    tempLink.setAttribute('download', 'output.csv');
+    tempLink.setAttribute('download', 'predict-output.csv');
     tempLink.click();
   };
 
@@ -124,7 +128,7 @@ class UploadForm extends Component {
           </form>
         </Paper>
 
-        {this.state.outputStr ? <DataTable outputStr={this.state.outputStr} /> : ''}
+        {this.state.outputArr ? <DataTable outputArr={this.state.outputArr} /> : ''}
       </div>
     );
   }
@@ -150,4 +154,4 @@ const styles = {
   }
 };
 
-export default withStyles(styles)(withTheme(UploadForm));
+export default withStyles(styles)(withTheme(PredictForm));
