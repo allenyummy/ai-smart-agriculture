@@ -9,6 +9,9 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
+  container: {
+    width: '60%'
+  },
   root: {
     width: '100%',
     marginTop: theme.spacing(3),
@@ -17,9 +20,6 @@ const useStyles = makeStyles(theme => ({
   title: {
     alignContent: 'center'
   }
-  // table: {
-  //   minWidth: 650
-  // }
 }));
 
 function createData(accuracy, rf, dt, xgb, lstm) {
@@ -31,35 +31,33 @@ const rows = [
   createData('Test set (#1377)', '81.7%', '76.6%', '81.3%', '71.2%')
 ];
 
-export default function SimpleTable() {
+export default function SimpleTable(props) {
   const classes = useStyles();
+  const headArr = props.outputArr[0];
+  const bodyArr = props.outputArr.slice(1);
+  console.log(bodyArr);
 
   return (
-    <div>
+    <div className={classes.container}>
       <Typography variant='h6' className={classes.title} align='center'>
-        Accuracy Table
+        {props.title}
       </Typography>
       <Paper className={classes.root}>
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell>Accuracy</TableCell>
-              <TableCell align='right'>RF</TableCell>
-              <TableCell align='right'>DT</TableCell>
-              <TableCell align='right'>XGB</TableCell>
-              <TableCell align='right'>LSTM</TableCell>
+              {headArr.map(head => (
+                <TableCell align='center'>{head}</TableCell>
+              ))}
             </TableRow>
           </TableHead>
+
           <TableBody>
-            {rows.map(row => (
-              <TableRow key={row.name}>
-                <TableCell component='th' scope='row'>
-                  {row.accuracy}
-                </TableCell>
-                <TableCell align='right'>{row.rf}</TableCell>
-                <TableCell align='right'>{row.dt}</TableCell>
-                <TableCell align='right'>{row.xgb}</TableCell>
-                <TableCell align='right'>{row.lstm}</TableCell>
+            {bodyArr.map((row, key) => (
+              <TableRow key={key}>
+                {row.map((item, key) => (
+                  <TableCell align='center'>{item}</TableCell>
+                ))}
               </TableRow>
             ))}
           </TableBody>

@@ -22,29 +22,31 @@ function DataTable(props) {
     fixedWidthColumns.hasOwnProperty(index) ? fixedWidthColumns[index] : getColumnWidth({ index });
 
   return (
-    <Paper className={classes.paper}>
-      <div className={classes.wrapper}>
-        <AutoSizer>
-          {({ height, width }) => (
-            <ColumnSizer columnMaxWidth={200} columnMinWidth={50} columnCount={outputArr[0].length} width={width - 200}>
-              {({ adjustedWidth, getColumnWidth, registerChild }) => (
-                <Grid
-                  ref={registerChild}
-                  cellRenderer={cellRenderer}
-                  columnCount={outputArr[0].length}
-                  columnWidth={getColumnWidthHelper(getColumnWidth)}
-                  height={height}
-                  rowCount={outputArr.length}
-                  rowHeight={30}
-                  width={width}
-                />
-              )}
-            </ColumnSizer>
-          )}
-        </AutoSizer>
-      </div>
-      {props.children}
-    </Paper>
+    <div className={classes.wrapper}>
+      <AutoSizer>
+        {({ height, width }) => (
+          <ColumnSizer
+            columnMaxWidth={200}
+            columnMinWidth={50}
+            columnCount={outputArr[0].length}
+            width={width - 200}
+          >
+            {({ adjustedWidth, getColumnWidth, registerChild }) => (
+              <Grid
+                ref={registerChild}
+                cellRenderer={cellRenderer}
+                columnCount={outputArr[0].length}
+                columnWidth={getColumnWidthHelper(getColumnWidth)}
+                height={height}
+                rowCount={outputArr.length}
+                rowHeight={30}
+                width={width}
+              />
+            )}
+          </ColumnSizer>
+        )}
+      </AutoSizer>
+    </div>
   );
 }
 

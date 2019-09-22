@@ -10,6 +10,7 @@ import DownloadButton from './DownloadButton';
 import DataTable from '../data-table/DataTable';
 import PretrainedButton from './PretrainedButton';
 import AccuracyTable from './AccuracyTable';
+import Typography from '@material-ui/core/Typography';
 
 const httpClient = axios.create();
 httpClient.defaults.timeout = 60 * 25 * 1000;
@@ -17,7 +18,13 @@ httpClient.defaults.timeout = 60 * 25 * 1000;
 class PredictForm extends Component {
   constructor(props) {
     super(props);
-    this.state = { inputFile: '', modelFile: '', outputStr: '', loading: false, success: false };
+    this.state = {
+      inputFile: '',
+      modelFile: '',
+      outputStr: '',
+      loading: false,
+      success: false
+    };
   }
 
   onChange = e => {
@@ -70,11 +77,17 @@ class PredictForm extends Component {
     // axios.post(url, formData, config);
     this.setState({ loading: true, success: false });
     const result = await httpClient.post(url, formData, config);
-    let resultArr = result.split('\n').map(function(row) {
+    console.log(result);
+    let resultArr = result.data.split('\n').map(function(row) {
       return row.split(',');
     });
     resultArr.unshift(['', '遮陰網', '內循環扇', '天窗', '捲揚1', '捲揚2']);
-    this.setState({ outputStr: result.data, outputArr: resultArr, loading: false, success: true });
+    this.setState({
+      outputStr: result.data,
+      outputArr: resultArr,
+      loading: false,
+      success: true
+    });
   };
 
   onDownload = () => {
@@ -91,25 +104,21 @@ class PredictForm extends Component {
     const pretrainedModelArr = ['RF', 'DT', 'XGB', 'LSTM'];
     return (
       <div className={classes.wrapper}>
-        <Paper className={classes.paper}>
-          <AccuracyTable />
-        </Paper>
-
-        <Paper className={classes.paper}>
+        <Paper className={(classes.paper, classes.large)}>
           <form>
             <UploadInput
               file={this.state.inputFile}
               onChange={this.onChange}
-              name="inputFile"
-              showText="Upload Cleaned Data"
-              accept=".csv"
+              name='inputFile'
+              showText='Upload Cleaned Data'
+              accept='.csv'
             />
 
             <UploadInput
               file={this.state.modelFile}
               onChange={this.onChange}
-              name="modelFile"
-              showText="Upload Model File"
+              name='modelFile'
+              showText='Upload Model File'
             />
             <div className={classes.pretrainedWrapper}>
               {pretrainedModelArr.map(model => (
@@ -122,35 +131,61 @@ class PredictForm extends Component {
                 />
               ))}
             </div>
-            <SubmitButton onSubmit={this.onSubmit} success={this.state.success} loading={this.state.loading} />
+            <SubmitButton
+              onSubmit={this.onSubmit}
+              success={this.state.success}
+              loading={this.state.loading}
+            />
 
             {this.state.outputStr ? <DownloadButton onDownload={this.onDownload} /> : ''}
           </form>
+          <div className={classes.dataTable}>
+            {this.state.outputArr ? (
+              <>
+                <Typography variant='h6' className={classes.title} align='center'>
+                  Result Table
+                </Typography>
+                <DataTable outputArr={this.state.outputArr} />
+              </>
+            ) : (
+              ''
+            )}
+          </div>
         </Paper>
 
-        {this.state.outputArr ? <DataTable outputArr={this.state.outputArr} /> : ''}
+        <Paper className={classes.paper}>
+          <AccuracyTable />
+        </Paper>
       </div>
     );
   }
 }
 
 const styles = {
+  large: {
+    width: '55%',
+    padding: '20px 10px',
+    marginBottom: '20px'
+  },
   paper: {
-    width: '100%',
-    padding: '20px 40px',
+    width: '40%',
+    padding: '20px 10px',
     marginBottom: '20px'
   },
   wrapper: {
     width: '100%',
     display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center'
   },
   pretrainedWrapper: {
     width: '40%',
     display: 'flex',
     justifyContent: 'space-around'
+  },
+  dataTable: {
+    padding: '20px 40px'
   }
 };
 
