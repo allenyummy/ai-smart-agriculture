@@ -8,7 +8,7 @@ function UploadInput(props) {
   return (
     <>
       <input
-        type='file'
+        type="file"
         name={props.name}
         accept={props.accept}
         style={{ display: 'none' }}
@@ -16,12 +16,7 @@ function UploadInput(props) {
         onChange={props.onChange}
       />
       <div className={classes.label}>
-        <Button
-          className={classes.upload}
-          variant='contained'
-          component='label'
-          htmlFor={props.name}
-        >
+        <Button className={classes.upload} variant="contained" component="label" htmlFor={props.name}>
           {props.showText}
           <CloudUploadIcon className={classes.rightIcon} />
         </Button>
@@ -32,7 +27,7 @@ function UploadInput(props) {
 }
 
 function showText(file) {
-  return file ? <span>Model Selected - {file.name}</span> : <span>No file selected...</span>;
+  return file ? <span>File Selected - {file.name}</span> : <span>No file selected...</span>;
 }
 const styles = {
   rightIcon: {

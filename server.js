@@ -17,28 +17,27 @@ var upload = multer({ storage: storage });
 
 var app = express();
 
-app.post(
-  '/api/predictPretrain',
-  upload.fields([{ name: 'inputFile', maxCount: 1 }]),
-  function(req, res, next) {
-    console.log('/api/predictPretrain');
-    console.log(`scripts/AI_Decision_forDefault${req.body.model}Model.py`);
-    const { spawnSync } = require('child_process');
-    const ls = spawnSync('python3', [
-      `scripts/AI_Decision_forDefaultRFModel.py`,
-      'tmp/my-uploads/inputFile',
-      '-otmp/my-uploads/output.csv'
-    ]);
-    res.sendFile(path.join(__dirname, '/tmp/my-uploads', 'output.csv'));
-  }
-);
+app.post('/api/predictPretrain', upload.fields([{ name: 'inputFile', maxCount: 1 }]), function(
+  req,
+  res,
+  next
+) {
+  console.log('/api/predictPretrain');
+  console.log(`scripts/AI_Decision_forDefault${req.body.model}Model.py`);
+  const { spawnSync } = require('child_process');
+  const ls = spawnSync('python3', [
+    `scripts/AI_Decision_forDefaultRFModel.py`,
+    'tmp/my-uploads/inputFile',
+    '-o',
+    'tmp/my-uploads/output.csv'
+  ]);
+
+  res.sendFile(path.join(__dirname, '/tmp/my-uploads', 'output.csv'));
+});
 
 app.post(
   '/api/predict',
-  upload.fields([
-    { name: 'inputFile', maxCount: 1 },
-    { name: 'modelFile', maxCount: 1 }
-  ]),
+  upload.fields([{ name: 'inputFile', maxCount: 1 }, { name: 'modelFile', maxCount: 1 }]),
   function(req, res, next) {
     console.log('/api/predict');
 
@@ -47,28 +46,31 @@ app.post(
       'scripts/AI_Decision_forUploadOwnModel.py',
       'tmp/my-uploads/inputFile',
       'tmp/my-uploads/modelFile',
-      '-otmp/my-uploads/output.csv'
+      '-o',
+      'tmp/my-uploads/output.csv'
     ]);
+
     res.sendFile(path.join(__dirname, '/tmp/my-uploads', 'output.csv'));
   }
 );
 
 app.post(
-  '/api/clean',
-  upload.fields([
-    { name: 'sensorData', maxCount: 1 },
-    { name: 'actuatorData', maxCount: 1 }
-  ]),
+  '/api/clean1',
+  upload.fields([{ name: 'sensorData', maxCount: 1 }, { name: 'actuatorData', maxCount: 1 }]),
   async function(req, res, next) {
     const { spawnSync } = require('child_process');
     const ls = spawnSync('python3', [
       'scripts/DataClean-1.py',
       'tmp/my-uploads/sensorData',
       'tmp/my-uploads/actuatorData',
-      '-octmp/output/comparison.csv',
-      '-opstmp/output/pivot_sensorData.csv',
-      '-opatmp/output/pivot_actuatorData.csv'
+      '-oc',
+      'tmp/output/comparison.csv',
+      '-ops',
+      'tmp/output/pivot_sensorData.csv',
+      '-opa',
+      'tmp/output/pivot_actuatorData.csv'
     ]);
+
     let jsonObjArr = new Array(3);
     jsonObjArr[0] = fs.readFileSync(
       path.join(__dirname, '/tmp/output/', 'comparison.csv'),
@@ -88,13 +90,40 @@ app.post(
   }
 );
 
+app.post(
+  '/api/clean2',
+  upload.fields([{ name: 'sensorData', maxCount: 1 }, { name: 'actuatorData', maxCount: 1 }]),
+  async function(req, res, next) {
+    const { spawnSync } = require('child_process');
+    const ls = spawnSync('python3', [
+      'scripts/DataClean-2.py',
+      'tmp/my-uploads/sensorData',
+      'tmp/my-uploads/actuatorData',
+      '-os',
+      'tmp/output/outputsensor.csv',
+      '-om',
+      'tmp/output/outputMerge.csv'
+    ]);
+
+    let jsonObjArr = new Array(3);
+    jsonObjArr[0] = fs.readFileSync(
+      path.join(__dirname, '/tmp/output/', 'outputsensor.csv'),
+      'utf-8',
+      function(err, data) {}
+    );
+    jsonObjArr[1] = fs.readFileSync(
+      path.join(__dirname, '/tmp/output/', 'outputMerge.csv'),
+      'utf-8'
+    );
+    // await Promise.all(jsonObjArr);
+    res.send(jsonObjArr);
+  }
+);
+
 app.get('/api/test', async function(req, res, next) {
   let jsonObjArr = new Array(3);
   // jsonObjArr[0] = await csv({ noheader: true }).fromFile(path.join(__dirname, '/tmp/output/', 'comparison.csv'));
-  jsonObjArr[0] = fs.readFileSync(
-    path.join(__dirname, '/tmp/output/', 'comparison.csv'),
-    'utf-8'
-  );
+  jsonObjArr[0] = fs.readFileSync(path.join(__dirname, '/tmp/output/', 'comparison.csv'), 'utf-8');
   jsonObjArr[1] = fs.readFileSync(
     path.join(__dirname, '/tmp/output/', 'pivot_sensorData.csv'),
     'utf-8'
@@ -111,7 +140,6 @@ app.get('/api/test', async function(req, res, next) {
 app.get('/api/predict', function(req, res) {
   res.sendFile(path.join(__dirname, '/tmp/my-uploads', 'output.csv'));
 });
-
 app.get('/api/test', async function(req, res) {
   let readStream = fs.createReadStream('tmp/my-uploads/output.csv');
   res.setHeader('Content-Type', 'text/csv');

@@ -11,6 +11,7 @@ import DataTable from '../data-table/DataTable';
 import PretrainedButton from './PretrainedButton';
 import AccuracyTable from './AccuracyTable';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 
 const httpClient = axios.create();
 httpClient.defaults.timeout = 60 * 25 * 1000;
@@ -23,7 +24,8 @@ class PredictForm extends Component {
       modelFile: '',
       outputStr: '',
       loading: false,
-      success: false
+      success: false,
+      pretrainedModel: ''
     };
   }
 
@@ -35,6 +37,9 @@ class PredictForm extends Component {
 
   onSubmit = async e => {
     e.preventDefault();
+    if (this.state.pretrainedModel) {
+      await this.onSubmitPretrainedModel(e, this.state.pretrainedModel);
+    }
     if (!this.state.inputFile || !this.state.modelFile) {
       alert('Please upload file first!');
       return;
@@ -54,10 +59,24 @@ class PredictForm extends Component {
     this.setState({ loading: true, success: false });
     // const result = await axios.post(url, formData, config);
     const result = await httpClient.post(url, formData, config);
-    this.setState({ outputStr: result.data, loading: false, success: true });
+    let resultArr = result.data.split('\n').map(function(row) {
+      return row.split(',');
+    });
+    resultArr.unshift(['', '遮陰網', '內循環扇', '天窗', '捲揚1', '捲揚2']);
+    this.setState({
+      outputStr: result.data,
+      outputArr: resultArr,
+      loading: false,
+      success: true
+    });
   };
 
-  onSubmitPretrained = async (e, model) => {
+  onSelectPretrainedModel = (e, model) => {
+    this.setState({ pretrainedModel: model });
+    this.setState({ modelFile: { name: model } });
+  };
+
+  onSubmitPretrainedModel = async (e, model) => {
     e.preventDefault();
     if (!this.state.inputFile) {
       alert('Please upload file first!');
@@ -74,14 +93,13 @@ class PredictForm extends Component {
       }
     };
 
-    // axios.post(url, formData, config);
     this.setState({ loading: true, success: false });
     const result = await httpClient.post(url, formData, config);
-    console.log(result);
     let resultArr = result.data.split('\n').map(function(row) {
       return row.split(',');
     });
     resultArr.unshift(['', '遮陰網', '內循環扇', '天窗', '捲揚1', '捲揚2']);
+
     this.setState({
       outputStr: result.data,
       outputArr: resultArr,
@@ -123,7 +141,7 @@ class PredictForm extends Component {
             <div className={classes.pretrainedWrapper}>
               {pretrainedModelArr.map(model => (
                 <PretrainedButton
-                  onSubmit={e => this.onSubmitPretrained(e, model)}
+                  onSubmit={e => this.onSelectPretrainedModel(e, model)}
                   success={this.state.success}
                   loading={this.state.loading}
                   key={model}
@@ -155,6 +173,30 @@ class PredictForm extends Component {
 
         <Paper className={classes.paper}>
           <AccuracyTable />
+
+          <Typography variant='h6' className={classes.title} align='center'>
+            Data
+          </Typography>
+          <div className={classes.downloadContainer}>
+            <Button
+              className={classes.download}
+              component='a'
+              variant='contained'
+              href='./files/clean_data_des.docx'
+              download='clean_data_description.docx'
+            >
+              Format Description
+            </Button>
+            <Button
+              className={classes.download}
+              component='a'
+              variant='contained'
+              href='files/clean_data_ex.csv'
+              download='clean_data_example.csv'
+            >
+              Example File
+            </Button>
+          </div>
         </Paper>
       </div>
     );
@@ -186,7 +228,16 @@ const styles = {
   },
   dataTable: {
     padding: '20px 40px'
-  }
+  },
+  title: { margin: '10px 0' },
+  downloadContainer: {
+    width: '100%',
+    display: 'flex',
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
+  download: { width: '40%' }
 };
 
 export default withStyles(styles)(withTheme(PredictForm));

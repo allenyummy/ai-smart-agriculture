@@ -1,6 +1,8 @@
 import React from 'react';
 import PredictForm from './components/predict-form/PredictForm';
-import CleanForm from './components/clean-form/CleanForm';
+import CleanForm1 from './components/clean-form1/CleanForm1';
+import CleanForm2 from './components/clean-form2/CleanForm2';
+import Home from './components/home/Home';
 
 import { withStyles } from '@material-ui/core/styles';
 import Navbar from './components/nav/Navbar';
@@ -16,7 +18,9 @@ function App(props) {
       <Navbar />
       <Container maxWidth='lg' className={classes.container}>
         <Switch>
-          <Route exact path='/data-cleaning' component={CleanForm} />
+          <Route exact path='/' component={Home} />
+          <Route exact path='/data-cleaning1' component={CleanForm1} />
+          <Route exact path='/data-cleaning2' component={CleanForm2} />
           <Route exact path='/classification' component={PredictForm} />
         </Switch>
       </Container>

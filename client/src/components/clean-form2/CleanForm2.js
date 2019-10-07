@@ -7,7 +7,10 @@ import axios from 'axios';
 import UploadInput from './UploadInput';
 import SubmitButton from './SumbitButton';
 import DownloadButton from './DownloadButton';
+// import DataTable from './DataTable';
 import DataTable from './DataTable';
+import Button from '@material-ui/core/Button';
+
 import PieChart from './PieChart';
 import Typography from '@material-ui/core/Typography';
 const fs = require('fs');
@@ -15,7 +18,7 @@ const fs = require('fs');
 const httpClient = axios.create();
 httpClient.defaults.timeout = 60 * 25 * 1000;
 
-class CleanForm extends Component {
+class CleanForm2 extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -39,14 +42,16 @@ class CleanForm extends Component {
       alert('Please upload file first!');
       return;
     }
-    const url = '/api/clean';
+    const url = '/api/clean2';
     const formData = new FormData();
     formData.append('sensorData', this.state.sensorData);
     formData.append('actuatorData', this.state.actuatorData);
 
     this.setState({ loading: true, success: false });
     const result = await httpClient.post(url, formData);
-    let resultArr = result.data.map(result =>
+    console.log(result);
+    console.log(result.data);
+    let resultArr = result.data.slice(0, 2).map(result =>
       result.split('\n').map(function(row) {
         return row.split(',');
       })
@@ -72,20 +77,20 @@ class CleanForm extends Component {
     const { classes } = this.props;
     const fileNameArr = ['compareData.csv', 'sensorData.csv', 'actuatorData.csv'];
     const titleArr = ['Comparison', 'Pivot SensorData', 'Pivot ActuatorData'];
-    const pie1Data = this.state.outputArrs
-      ? {
-          series: this.state.outputArrs[1].map(row => parseInt(row[1], 10)).slice(1, -1),
-          labels: this.state.outputArrs[1].map(row => row[0]).slice(1, -1)
-        }
-      : null;
-    const pie2Data = this.state.outputArrs
-      ? {
-          series: this.state.outputArrs[2][this.state.outputArrs[2].length - 2]
-            .slice(1)
-            .map(num => parseInt(num)),
-          labels: this.state.outputArrs[2][0].slice(1)
-        }
-      : null;
+    // const pie1Data = this.state.outputArrs
+    //   ? {
+    //       series: this.state.outputArrs[1].map(row => parseInt(row[1], 10)).slice(1, -1),
+    //       labels: this.state.outputArrs[1].map(row => row[0]).slice(1, -1)
+    //     }
+    //   : null;
+    // const pie2Data = this.state.outputArrs
+    //   ? {
+    //       series: this.state.outputArrs[2][this.state.outputArrs[2].length - 2]
+    //         .slice(1)
+    //         .map(num => parseInt(num)),
+    //       labels: this.state.outputArrs[2][0].slice(1)
+    //     }
+    //   : null;
 
     return (
       <div className={classes.wrapper}>
@@ -124,18 +129,13 @@ class CleanForm extends Component {
                 <div>
                   <Paper className={classes.paper}>
                     <div className={classes.dataContainer}>
-                      <DataTable
+                      {/* <DataTable
                         key={idx}
                         outputArr={outputArr}
                         className={classes.dataTable}
                         title={titleArr[idx]}
-                      />
-                      {idx === 1 ? (
-                        <PieChart series={pie1Data.series} labels={pie1Data.labels} />
-                      ) : null}
-                      {idx === 2 ? (
-                        <PieChart series={pie2Data.series} labels={pie2Data.labels} />
-                      ) : null}
+                      /> */}
+                      <DataTable outputArr={outputArr} />
                     </div>
                     <DownloadButton
                       key={idx}
@@ -146,6 +146,55 @@ class CleanForm extends Component {
                 </div>
               ))
             : ''}
+        </Paper>
+        <Paper className={classes.downloadPaper}>
+          <div className={classes.downloadContainer}>
+            <Typography variant='h6' className={classes.title} align='center'>
+              Sensor Data
+            </Typography>
+            <Button
+              className={classes.download}
+              component='a'
+              variant='contained'
+              href='./files/sensor_des.docx'
+              download='sensor_description.docx'
+            >
+              Format Data
+            </Button>
+            <Button
+              className={classes.download}
+              component='a'
+              variant='contained'
+              href='files/sensor_ex.csv'
+              download='sensor_description.docx'
+            >
+              Example File
+            </Button>
+          </div>
+          <div className={classes.downloadContainer}>
+            <Typography variant='h6' className={classes.title} align='center'>
+              Actuator Data
+            </Typography>
+
+            <Button
+              className={classes.download}
+              component='a'
+              variant='contained'
+              href='./files/actuator_des.docx'
+              download='actuator_description.docx'
+            >
+              Format Description
+            </Button>
+            <Button
+              className={classes.download}
+              component='a'
+              variant='contained'
+              href='files/actuator_ex.csv'
+              download='actuator_description.csv'
+            >
+              Example File
+            </Button>
+          </div>
         </Paper>
       </div>
     );
@@ -171,7 +220,31 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center'
+  },
+  downloadPaper: {
+    width: '90%',
+    padding: '20px 40px',
+    margin: '10px 0',
+    display: 'flex',
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
+  downloadContainer: {
+    width: '50%',
+    display: 'flex',
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
+  download: {
+    width: '45%',
+    margin: '10px 0'
+  },
+  title: {
+    width: '100%',
+    alignContent: 'center'
   }
 };
 
-export default withStyles(styles)(withTheme(CleanForm));
+export default withStyles(styles)(withTheme(CleanForm2));

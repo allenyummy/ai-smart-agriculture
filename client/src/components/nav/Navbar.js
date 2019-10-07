@@ -14,15 +14,21 @@ function Navbar(props) {
       <AppBar position='static'>
         <Toolbar className={classes.toolbar}>
           <Typography variant='h6' color='inherit' className={classes.title}>
-            AI Smart Agriculture
+            {/* AI Smart Agriculture */}
+            <Button component={NavLink} to='/' activeStyle={{ color: '#fff' }}>
+              AI Smart Agriculture
+            </Button>
           </Typography>
           {/* <Typography variant="h6" color="inherit" className={classes.lab}>
             國立台灣大學生物產業機電工程學系
             <img src={logo} alt="Kitten" height="65" width="65" />
           </Typography> */}
           <Typography variant='h6' color='inherit' className={classes.navBar}>
-            <Button component={NavLink} to='/data-cleaning' activeStyle={{ color: '#fff' }}>
-              Data Cleaning
+            <Button component={NavLink} to='/data-cleaning1' activeStyle={{ color: '#fff' }}>
+              Data Cleaning1
+            </Button>
+            <Button component={NavLink} to='/data-cleaning2' activeStyle={{ color: '#fff' }}>
+              Data Cleaning2
             </Button>
             <Button component={NavLink} to='/classification' activeStyle={{ color: '#fff' }}>
               Classification

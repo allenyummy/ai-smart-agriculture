@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
   container: {
-    width: '60%'
+    width: '50%'
   },
   root: {
     width: '100%',
