@@ -15,3 +15,10 @@ npm run dev
 ```
 
 This will run a server on http://localhost:5000 and an app server on http://localhost:3000 which will proxy api requests to http://localhost:5000
+
+### Install with Docker 
+
+```
+docker pull kerorojason/ai-smart-agriculture
+docker run -p 5000:5000 kerorojason/ai-smart-agriculture
+```
