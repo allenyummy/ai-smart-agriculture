@@ -51,10 +51,15 @@ class CleanForm2 extends Component {
     const result = await httpClient.post(url, formData);
     console.log(result);
     console.log(result.data);
-    let resultArr = result.data.slice(0, 2).map(result =>
-      result.split('\n').map(function(row) {
-        return row.split(',');
-      })
+    let resultArr = result.data.slice(0, 2).map((result, index) =>
+      index === 1
+        ? result.split('\n').map(function(row) {
+            row = row.replace(/\"\[(\d+),\s(\d+),\s(\d+)\]\"/g, '[$1;$2;$3]');
+            return row.split(',');
+          })
+        : result.split('\n').map(function(row) {
+            return row.split(',');
+          })
     );
     this.setState({
       outputStrs: result.data,
@@ -64,18 +69,18 @@ class CleanForm2 extends Component {
     });
   };
 
-  onDownload = idx => {
+  onDownload = (idx, name) => {
     let data = new Blob([this.state.outputStrs[idx]], { type: 'text/csv' });
     let csvURL = window.URL.createObjectURL(data);
     let tempLink = document.createElement('a');
     tempLink.href = csvURL;
-    tempLink.setAttribute('download', 'data-clean-output.csv');
+    tempLink.setAttribute('download', `${name}.csv`);
     tempLink.click();
   };
 
   render() {
     const { classes } = this.props;
-    const fileNameArr = ['compareData.csv', 'sensorData.csv', 'actuatorData.csv'];
+    const fileNameArr = ['sensor_irregular_time.csv', 'merge_irregular_time.csv'];
     const titleArr = ['Comparison', 'Pivot SensorData', 'Pivot ActuatorData'];
     // const pie1Data = this.state.outputArrs
     //   ? {
@@ -127,6 +132,9 @@ class CleanForm2 extends Component {
           {this.state.outputArrs
             ? this.state.outputArrs.map((outputArr, idx) => (
                 <div>
+                  <Typography variant='h6' className={classes.title} align='center'>
+                    {titleArr[idx]}
+                  </Typography>
                   <Paper className={classes.paper}>
                     <div className={classes.dataContainer}>
                       {/* <DataTable
@@ -139,7 +147,7 @@ class CleanForm2 extends Component {
                     </div>
                     <DownloadButton
                       key={idx}
-                      onDownload={() => this.onDownload(idx)}
+                      onDownload={() => this.onDownload(idx, fileNameArr[idx])}
                       fileName={fileNameArr[idx]}
                     />
                   </Paper>
@@ -243,7 +251,8 @@ const styles = {
   },
   title: {
     width: '100%',
-    alignContent: 'center'
+    alignContent: 'center',
+    margin: '20px 0 -15px 0'
   }
 };
 

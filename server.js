@@ -26,13 +26,18 @@ app.post('/api/predictPretrain', upload.fields([{ name: 'inputFile', maxCount: 1
   console.log(`scripts/AI_Decision_forDefault${req.body.model}Model.py`);
   const { spawnSync } = require('child_process');
   const ls = spawnSync('python3', [
-    `scripts/AI_Decision_forDefaultRFModel.py`,
+    `scripts/AI_Decision_forDefault${req.body.model}Model.py`,
     'tmp/my-uploads/inputFile',
     '-o',
     'tmp/my-uploads/output.csv'
   ]);
+  if (ls.stderr) {
+    console.log(Error(ls.stderr));
+    process.exitCode = 1;
+  }
 
   res.sendFile(path.join(__dirname, '/tmp/my-uploads', 'output.csv'));
+  return;
 });
 
 app.post(
@@ -74,8 +79,7 @@ app.post(
     let jsonObjArr = new Array(3);
     jsonObjArr[0] = fs.readFileSync(
       path.join(__dirname, '/tmp/output/', 'comparison.csv'),
-      'utf-8',
-      function(err, data) {}
+      'utf-8'
     );
     jsonObjArr[1] = fs.readFileSync(
       path.join(__dirname, '/tmp/output/', 'pivot_sensorData.csv'),
@@ -95,6 +99,7 @@ app.post(
   upload.fields([{ name: 'sensorData', maxCount: 1 }, { name: 'actuatorData', maxCount: 1 }]),
   async function(req, res, next) {
     const { spawnSync } = require('child_process');
+    console.log('/api/clean2');
     const ls = spawnSync('python3', [
       'scripts/DataClean-2.py',
       'tmp/my-uploads/sensorData',
@@ -105,11 +110,10 @@ app.post(
       'tmp/output/outputMerge.csv'
     ]);
 
-    let jsonObjArr = new Array(3);
+    let jsonObjArr = new Array(2);
     jsonObjArr[0] = fs.readFileSync(
       path.join(__dirname, '/tmp/output/', 'outputsensor.csv'),
-      'utf-8',
-      function(err, data) {}
+      'utf-8'
     );
     jsonObjArr[1] = fs.readFileSync(
       path.join(__dirname, '/tmp/output/', 'outputMerge.csv'),
@@ -120,36 +124,40 @@ app.post(
   }
 );
 
-app.get('/api/test', async function(req, res, next) {
-  let jsonObjArr = new Array(3);
-  // jsonObjArr[0] = await csv({ noheader: true }).fromFile(path.join(__dirname, '/tmp/output/', 'comparison.csv'));
-  jsonObjArr[0] = fs.readFileSync(path.join(__dirname, '/tmp/output/', 'comparison.csv'), 'utf-8');
-  jsonObjArr[1] = fs.readFileSync(
-    path.join(__dirname, '/tmp/output/', 'pivot_sensorData.csv'),
-    'utf-8'
-  );
-  jsonObjArr[2] = fs.readFileSync(
-    path.join(__dirname, '/tmp/output/', 'pivot_actuatorData.csv'),
-    'utf-8'
-  );
+app.post(
+  '/api/clean3',
+  upload.fields([{ name: 'merge_irregular_time_data', maxCount: 1 }]),
+  async function(req, res, next) {
+    console.log('/api/clean3');
+    const { spawnSync } = require('child_process');
+    const ls = spawnSync('python3', [
+      'scripts/DataClean-3.py',
+      'tmp/my-uploads/merge_irregular_time_data',
+      '-om',
+      'tmp/output/merge_regular_time.csv',
+      '-os1',
+      'tmp/output/output_statistics1.csv',
+      '-os2',
+      'tmp/output/output_statistics2.csv'
+    ]);
 
-  res.send(jsonObjArr);
-});
-
-/*
-app.get('/api/predict', function(req, res) {
-  res.sendFile(path.join(__dirname, '/tmp/my-uploads', 'output.csv'));
-});
-app.get('/api/test', async function(req, res) {
-  let readStream = fs.createReadStream('tmp/my-uploads/output.csv');
-  res.setHeader('Content-Type', 'text/csv');
-  res.setHeader('Content-Disposition', 'attachment; filename="output.csv"');
-  // res.sendFile(path.join(__dirname, '/tmp/my-uploads', 'output.csv'));
-  readStream.on('open', function() {
-    readStream.pipe(res);
-  });
-});
-*/
+    let jsonObjArr = new Array(3);
+    jsonObjArr[0] = fs.readFileSync(
+      path.join(__dirname, '/tmp/output/', 'merge_regular_time.csv'),
+      'utf-8'
+    );
+    jsonObjArr[1] = fs.readFileSync(
+      path.join(__dirname, '/tmp/output/', 'output_statistics1.csv'),
+      'utf-8'
+    );
+    jsonObjArr[2] = fs.readFileSync(
+      path.join(__dirname, '/tmp/output/', 'output_statistics2.csv'),
+      'utf-8'
+    );
+    // await Promise.all(jsonObjArr);
+    res.send(jsonObjArr);
+  }
+);
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'));

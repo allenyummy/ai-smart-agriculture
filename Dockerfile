@@ -26,6 +26,8 @@ COPY --from=builder /app/build /app/client/build
 RUN mkdir -p /app/tmp/my-uploads
 RUN mkdir -p /app/tmp/output
 RUN conda install keras
+RUN conda install tensorflow
+RUN conda install -c conda-forge xgboost
 
 WORKDIR '/app'
 CMD ["npm","run","start-prod"]

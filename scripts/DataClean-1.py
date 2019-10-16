@@ -2,7 +2,7 @@
 """
 =====================================================
 @author: Chiang, Yu-Lun
-@date: 2019.08.25
+@date: 2019.09.30
 @goal: AI Smart Agriculture
 @goal: module
 @goal: (input)  raw data
@@ -71,6 +71,8 @@ if __name__ == '__main__':
     pivotTable_sensorData.at['total', sensor_id] = pivotTable_sensorData[sensor_id].sum()
     
     #--- pivot table of actuatorData ---#
+    actuatorData['field'] = actuatorData['device_id'].str.split("_").apply(lambda x: x[0])         ## split name of 'device_id' into field 
+    actuatorData['serial_num'] = actuatorData['device_id'].str.split("_").apply(lambda x: x[2])    ## split name of 'device_id' into serial_num 
     pivotTable_actuatorData = actuatorData.pivot_table(index='serial_num', columns='d.type', aggfunc='size', fill_value=0) 
     total = pd.Series(pivotTable_actuatorData.sum(), name = 'toal')
     pivotTable_actuatorData = pivotTable_actuatorData.append(total.to_frame().T)

@@ -30,6 +30,9 @@ function Navbar(props) {
             <Button component={NavLink} to='/data-cleaning2' activeStyle={{ color: '#fff' }}>
               Data Cleaning2
             </Button>
+            <Button component={NavLink} to='/data-cleaning3' activeStyle={{ color: '#fff' }}>
+              Data Cleaning3
+            </Button>
             <Button component={NavLink} to='/classification' activeStyle={{ color: '#fff' }}>
               Classification
             </Button>

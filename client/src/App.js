@@ -2,6 +2,7 @@ import React from 'react';
 import PredictForm from './components/predict-form/PredictForm';
 import CleanForm1 from './components/clean-form1/CleanForm1';
 import CleanForm2 from './components/clean-form2/CleanForm2';
+import CleanForm3 from './components/clean-form3/CleanForm3';
 import Home from './components/home/Home';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -21,6 +22,7 @@ function App(props) {
           <Route exact path='/' component={Home} />
           <Route exact path='/data-cleaning1' component={CleanForm1} />
           <Route exact path='/data-cleaning2' component={CleanForm2} />
+          <Route exact path='/data-cleaning3' component={CleanForm3} />
           <Route exact path='/classification' component={PredictForm} />
         </Switch>
       </Container>

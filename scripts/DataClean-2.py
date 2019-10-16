@@ -6,7 +6,7 @@
 @goal: AI Smart Agriculture
 @goal: module
 @goal: (input)  raw data
-@goal: (output) merge data with irregulat time interval
+@goal: (output) merge data with irregular time interval
 ========================================================
 """
 
@@ -14,8 +14,8 @@ import argparse
 import pandas as pd
 
 def process_command():
-    parser = argparse.ArgumentParser(prog = 'DataClean-1',
-                                     usage = 'python DataClean-1.py inputSensorData inputActuatorData',
+    parser = argparse.ArgumentParser(prog = 'DataClean-2',
+                                     usage = 'python DataClean-2.py inputSensorData inputActuatorData',
                                      description = 'DataClean',
                                      epilog = None)
     
@@ -101,7 +101,7 @@ if __name__ == '__main__':
             allData.loc[inserted_index, 'time'] = sensorData['time'][idx]
             allData.loc[inserted_index, str(sensorData['d.type'][idx])] = sensorData['d.value'][idx]
 
-    allData.to_csv(  args.outputSensor)
+    allData.to_csv( args.outputSensor)
     
     #--- Step2: Insert Actuator Data into DataFrame ---#
     start = 0

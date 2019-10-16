@@ -61,18 +61,18 @@ class CleanForm1 extends Component {
     });
   };
 
-  onDownload = idx => {
+  onDownload = (idx, name) => {
     let data = new Blob([this.state.outputStrs[idx]], { type: 'text/csv' });
     let csvURL = window.URL.createObjectURL(data);
     let tempLink = document.createElement('a');
     tempLink.href = csvURL;
-    tempLink.setAttribute('download', 'data-clean-output.csv');
+    tempLink.setAttribute('download', `${name}.csv`);
     tempLink.click();
   };
 
   render() {
     const { classes } = this.props;
-    const fileNameArr = ['compareData.csv', 'sensorData.csv', 'actuatorData.csv'];
+    const fileNameArr = ['compareData.csv', 'pivot_sensorData.csv', 'pivot_actuatorData.csv'];
     const titleArr = ['Comparison', 'Pivot SensorData', 'Pivot ActuatorData'];
     const pie1Data = this.state.outputArrs
       ? {
@@ -141,7 +141,7 @@ class CleanForm1 extends Component {
                     </div>
                     <DownloadButton
                       key={idx}
-                      onDownload={() => this.onDownload(idx)}
+                      onDownload={() => this.onDownload(idx, fileNameArr[idx])}
                       fileName={fileNameArr[idx]}
                     />
                   </Paper>
