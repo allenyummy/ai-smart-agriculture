@@ -35,7 +35,6 @@ export default function SimpleTable(props) {
   const classes = useStyles();
   const headArr = props.outputArr[0];
   const bodyArr = props.outputArr.slice(1);
-  console.log(bodyArr);
 
   return (
     <div className={classes.container}>

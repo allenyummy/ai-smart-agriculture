@@ -12,7 +12,7 @@ function Navbar(props) {
       <AppBar position='static'>
         <Toolbar className={classes.toolbar}>
           <Typography variant='h6' color='inherit' className={classes.lab}>
-            國立台灣大學生物產業機電工程學系
+            國立台灣大學生物機電工程學系
             <img src={logo} alt='Kitten' height='65' width='65' />
           </Typography>
         </Toolbar>

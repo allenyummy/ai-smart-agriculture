@@ -47,8 +47,6 @@ class CleanForm3 extends Component {
 
     this.setState({ loading: true, success: false });
     const result = await httpClient.post(url, formData);
-    console.log(result);
-    console.log(result.data);
     let resultArr = result.data.slice(0, 3).map((result, index) =>
       index === 0
         ? result.split('\n').map(function(row) {
@@ -119,32 +117,8 @@ class CleanForm3 extends Component {
                 ))
               : ''} */}
           </form>
-          {this.state.outputArrs
-            ? this.state.outputArrs.map((outputArr, idx) => (
-                <div>
-                  <Typography variant='h6' className={classes.title} align='center'>
-                    {titleArr[idx]}
-                  </Typography>
-                  <Paper className={classes.paper}>
-                    <div className={classes.dataContainer}>
-                      {/* <DataTable
-                        key={idx}
-                        outputArr={outputArr}
-                        className={classes.dataTable}
-                        title={titleArr[idx]}
-                      /> */}
-                      <DataTable outputArr={outputArr} title={titleArr[idx]} />
-                    </div>
-                    <DownloadButton
-                      key={idx}
-                      onDownload={() => this.onDownload(idx, fileNameArr[idx])}
-                      fileName={fileNameArr[idx]}
-                    />
-                  </Paper>
-                </div>
-              ))
-            : ''}
         </Paper>
+
         <Paper className={classes.downloadPaper}>
           <div className={classes.downloadContainer}>
             <Button
@@ -158,6 +132,35 @@ class CleanForm3 extends Component {
             </Button>
           </div>
         </Paper>
+        {this.state.outputArrs ? (
+          <Paper className={classes.paper}>
+            {this.state.outputArrs.map((outputArr, idx) => (
+              <div>
+                <Typography variant='h6' className={classes.title} align='center'>
+                  {titleArr[idx]}
+                </Typography>
+                <Paper className={classes.paper}>
+                  <div className={classes.dataContainer}>
+                    {/* <DataTable
+                        key={idx}
+                        outputArr={outputArr}
+                        className={classes.dataTable}
+                        title={titleArr[idx]}
+                      /> */}
+                    <DataTable outputArr={outputArr} title={titleArr[idx]} />
+                  </div>
+                  <DownloadButton
+                    key={idx}
+                    onDownload={() => this.onDownload(idx, fileNameArr[idx])}
+                    fileName={fileNameArr[idx]}
+                  />
+                </Paper>
+              </div>
+            ))}
+          </Paper>
+        ) : (
+          ''
+        )}
       </div>
     );
   }

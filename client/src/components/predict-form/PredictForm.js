@@ -131,7 +131,6 @@ class PredictForm extends Component {
               showText='Upload Cleaned Data'
               accept='.csv'
             />
-
             <UploadInput
               file={this.state.modelFile}
               onChange={this.onChange}
@@ -149,12 +148,15 @@ class PredictForm extends Component {
                 />
               ))}
             </div>
+            <div className={classes.pretrainedText}>
+              (輸入時間點 = 6，即5分鐘1筆之整合感測資料，取30分鐘作為輸入) <br />
+              (輸入特徵點 = 10，即除了四個土壤感測值之外的其餘感測值)
+            </div>
             <SubmitButton
               onSubmit={this.onSubmit}
               success={this.state.success}
               loading={this.state.loading}
             />
-
             {this.state.outputStr ? <DownloadButton onDownload={this.onDownload} /> : ''}
           </form>
           <div className={classes.dataTable}>
@@ -225,6 +227,11 @@ const styles = {
     width: '40%',
     display: 'flex',
     justifyContent: 'space-around'
+  },
+  pretrainedText: {
+    width: '40%',
+    margin: '10px 0 0 0',
+    fontSize: '14px'
   },
   dataTable: {
     padding: '20px 40px'

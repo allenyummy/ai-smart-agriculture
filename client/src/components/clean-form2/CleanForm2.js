@@ -49,8 +49,6 @@ class CleanForm2 extends Component {
 
     this.setState({ loading: true, success: false });
     const result = await httpClient.post(url, formData);
-    console.log(result);
-    console.log(result.data);
     let resultArr = result.data.slice(0, 2).map((result, index) =>
       index === 1
         ? result.split('\n').map(function(row) {
@@ -81,7 +79,10 @@ class CleanForm2 extends Component {
   render() {
     const { classes } = this.props;
     const fileNameArr = ['sensor_irregular_time.csv', 'merge_irregular_time.csv'];
-    const titleArr = ['Comparison', 'Pivot SensorData', 'Pivot ActuatorData'];
+    const titleArr = [
+      'Merge irregular time data (sensor)',
+      'merge irregular time data (sensor + actuator)'
+    ];
     // const pie1Data = this.state.outputArrs
     //   ? {
     //       series: this.state.outputArrs[1].map(row => parseInt(row[1], 10)).slice(1, -1),
@@ -129,32 +130,7 @@ class CleanForm2 extends Component {
                 ))
               : ''} */}
           </form>
-          {this.state.outputArrs
-            ? this.state.outputArrs.map((outputArr, idx) => (
-                <div>
-                  <Typography variant='h6' className={classes.title} align='center'>
-                    {titleArr[idx]}
-                  </Typography>
-                  <Paper className={classes.paper}>
-                    <div className={classes.dataContainer}>
-                      {/* <DataTable
-                        key={idx}
-                        outputArr={outputArr}
-                        className={classes.dataTable}
-                        title={titleArr[idx]}
-                      /> */}
-                      <DataTable outputArr={outputArr} />
-                    </div>
-                    <DownloadButton
-                      key={idx}
-                      onDownload={() => this.onDownload(idx, fileNameArr[idx])}
-                      fileName={fileNameArr[idx]}
-                    />
-                  </Paper>
-                </div>
-              ))
-            : ''}
-        </Paper>
+        </Paper>{' '}
         <Paper className={classes.downloadPaper}>
           <div className={classes.downloadContainer}>
             <Typography variant='h6' className={classes.title} align='center'>
@@ -204,13 +180,41 @@ class CleanForm2 extends Component {
             </Button>
           </div>
         </Paper>
+        {this.state.outputArrs ? (
+          <Paper className={classes.paper}>
+            {this.state.outputArrs.map((outputArr, idx) => (
+              <div>
+                <Typography variant='h6' className={classes['table-title']} align='center'>
+                  {titleArr[idx]}
+                </Typography>
+                <Paper className={classes.paper}>
+                  <div className={classes.dataContainer}>
+                    {/* <DataTable
+                        key={idx}
+                        outputArr={outputArr}
+                        className={classes.dataTable}
+                        title={titleArr[idx]}
+                      /> */}
+                    <DataTable outputArr={outputArr} />
+                  </div>
+                  <DownloadButton
+                    key={idx}
+                    onDownload={() => this.onDownload(idx, fileNameArr[idx])}
+                    fileName={fileNameArr[idx]}
+                  />
+                </Paper>
+              </div>
+            ))}
+          </Paper>
+        ) : (
+          ''
+        )}
       </div>
     );
   }
 }
 
 const styles = {
-  title: { marginTop: '25px' },
   paper: {
     width: '90%',
     padding: '20px 40px',
@@ -252,7 +256,12 @@ const styles = {
   title: {
     width: '100%',
     alignContent: 'center',
-    margin: '20px 0 -15px 0'
+    margin: '10px 0'
+  },
+  'table-title': {
+    width: '100%',
+    alignContent: 'center',
+    margin: '10px 0 -5px 0'
   }
 };
 

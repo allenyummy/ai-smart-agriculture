@@ -3,42 +3,59 @@ import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { flexbox } from '@material-ui/system';
 import { NavLink } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+
+const theme = createMuiTheme({
+  overrides: {
+    // Style sheet name
+    MuiButton: {
+      // Name of the rule
+      text: {
+        // Some CSS
+        color: 'white'
+      }
+    }
+  }
+});
 
 function Navbar(props) {
   const { classes } = props;
   return (
     <nav>
-      <AppBar position='static'>
-        <Toolbar className={classes.toolbar}>
-          <Typography variant='h6' color='inherit' className={classes.title}>
-            {/* AI Smart Agriculture */}
-            <Button component={NavLink} to='/' activeStyle={{ color: '#fff' }}>
-              AI Smart Agriculture
-            </Button>
-          </Typography>
-          {/* <Typography variant="h6" color="inherit" className={classes.lab}>
-            國立台灣大學生物產業機電工程學系
-            <img src={logo} alt="Kitten" height="65" width="65" />
-          </Typography> */}
-          <Typography variant='h6' color='inherit' className={classes.navBar}>
-            <Button component={NavLink} to='/data-cleaning1' activeStyle={{ color: '#fff' }}>
-              Data Cleaning1
-            </Button>
-            <Button component={NavLink} to='/data-cleaning2' activeStyle={{ color: '#fff' }}>
-              Data Cleaning2
-            </Button>
-            <Button component={NavLink} to='/data-cleaning3' activeStyle={{ color: '#fff' }}>
-              Data Cleaning3
-            </Button>
-            <Button component={NavLink} to='/classification' activeStyle={{ color: '#fff' }}>
-              Classification
-            </Button>
-          </Typography>
-        </Toolbar>
-      </AppBar>
+      <MuiThemeProvider theme={theme}>
+        <AppBar position='static'>
+          <Toolbar className={classes.toolbar}>
+            <Typography variant='h6' color='inherit' className={classes.title}>
+              {/* AI Smart Agriculture */}
+              <Button component={NavLink} to='/'>
+                AI Smart Agriculture
+              </Button>
+            </Typography>
+            <Typography variant='h6' color='inherit' className={classes.navBar}>
+              <Button
+                theme={theme}
+                component={NavLink}
+                to='/data-cleaning1'
+                color='MuiButton'
+                activeStyle={{ color: '#ffd700' }}
+              >
+                Data Cleaning1
+              </Button>
+              <Button component={NavLink} to='/data-cleaning2' activeStyle={{ color: '#ffd700' }}>
+                Data Cleaning2
+              </Button>
+              <Button component={NavLink} to='/data-cleaning3' activeStyle={{ color: '#ffd700' }}>
+                Data Cleaning3
+              </Button>
+              <Button component={NavLink} to='/classification' activeStyle={{ color: '#ffd700' }}>
+                Classification
+              </Button>
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      </MuiThemeProvider>
     </nav>
   );
 }

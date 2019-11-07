@@ -16,10 +16,10 @@ const styles = {
   container: {
     width: '100%',
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
   },
-  image: { width: '800px' }
+  image: { width: '45%' }
 };
 export default withStyles(styles)(Home);

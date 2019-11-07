@@ -121,34 +121,8 @@ class CleanForm1 extends Component {
                 ))
               : ''} */}
           </form>
-          {this.state.outputArrs
-            ? this.state.outputArrs.map((outputArr, idx) => (
-                <div>
-                  <Paper className={classes.paper}>
-                    <div className={classes.dataContainer}>
-                      <DataTable
-                        key={idx}
-                        outputArr={outputArr}
-                        className={classes.dataTable}
-                        title={titleArr[idx]}
-                      />
-                      {idx === 1 ? (
-                        <PieChart series={pie1Data.series} labels={pie1Data.labels} />
-                      ) : null}
-                      {idx === 2 ? (
-                        <PieChart series={pie2Data.series} labels={pie2Data.labels} />
-                      ) : null}
-                    </div>
-                    <DownloadButton
-                      key={idx}
-                      onDownload={() => this.onDownload(idx, fileNameArr[idx])}
-                      fileName={fileNameArr[idx]}
-                    />
-                  </Paper>
-                </div>
-              ))
-            : ''}
         </Paper>
+
         <Paper className={classes.downloadPaper}>
           <div className={classes.downloadContainer}>
             <Typography variant='h6' className={classes.title} align='center'>
@@ -198,6 +172,37 @@ class CleanForm1 extends Component {
             </Button>
           </div>
         </Paper>
+        {this.state.outputArrs ? (
+          <Paper className={classes.paper}>
+            {this.state.outputArrs.map((outputArr, idx) => (
+              <div>
+                <Paper className={classes.paper}>
+                  <div className={classes.dataContainer}>
+                    <DataTable
+                      key={idx}
+                      outputArr={outputArr}
+                      className={classes.dataTable}
+                      title={titleArr[idx]}
+                    />
+                    {idx === 1 ? (
+                      <PieChart series={pie1Data.series} labels={pie1Data.labels} />
+                    ) : null}
+                    {idx === 2 ? (
+                      <PieChart series={pie2Data.series} labels={pie2Data.labels} />
+                    ) : null}
+                  </div>
+                  <DownloadButton
+                    key={idx}
+                    onDownload={() => this.onDownload(idx, fileNameArr[idx])}
+                    fileName={fileNameArr[idx]}
+                  />
+                </Paper>
+              </div>
+            ))}
+          </Paper>
+        ) : (
+          ''
+        )}
       </div>
     );
   }
